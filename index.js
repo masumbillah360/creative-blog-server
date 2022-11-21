@@ -16,6 +16,7 @@ console.log(uri);
 const dbRun = async () => {
   try {
     const Home = client.db(process.env.DB_NAME).collection("Home");
+    const Blog = client.db(process.env.DB_NAME).collection("Blog");
     app.get("/homedata", async (req, res) => {
       const query = {};
       const result = await Home.find(query).limit(5).toArray();
@@ -34,6 +35,12 @@ const dbRun = async () => {
       const query = {};
       const result = await Home.find(query).toArray();
       res.send(result);
+    });
+    app.post("/users-bolg", async (req, res) => {
+      const blog = req.body;
+      const blogs = await Blog.insertOne(blog);
+      console.log(blog);
+      res.send(blogs);
     });
   } catch (error) {
     console.log(error);
