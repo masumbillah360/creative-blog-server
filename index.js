@@ -94,7 +94,7 @@ const dbRun = async () => {
       const todo = req.body;
       console.log(todo);
       const result = await Todos.insertOne(todo);
-      res.send("result");
+      res.send(result);
     });
     app.patch("/todos/:id", async (req, res) => {
       const id = req.params.id;
