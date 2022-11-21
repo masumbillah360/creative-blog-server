@@ -17,6 +17,7 @@ const dbRun = async () => {
   try {
     const Home = client.db(process.env.DB_NAME).collection("Home");
     const Blog = client.db(process.env.DB_NAME).collection("Blog");
+    const Commets = client.db(process.env.DB_NAME).collection("Comments");
     app.get("/homedata", async (req, res) => {
       const query = {};
       const result = await Home.find(query).limit(5).toArray();
@@ -47,6 +48,26 @@ const dbRun = async () => {
       console.log("email", email);
       const query = { userEmail: email };
       const result = await Blog.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/users-blog/:id", async (req, res) => {
+      id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await Blog.findOne(query);
+      res.send(result);
+    });
+    app.post("/users-comments", async (req, res) => {
+      const comment = req.body;
+      const result = await Commets.insertOne(comment);
+      console.log(comment);
+      res.send(result);
+    });
+    app.get("/users-comments", async (req, res) => {
+      const id = req.query.id;
+      console.log("id", id);
+      const query = { postId: id };
+      const result = await Commets.find(query).toArray();
       res.send(result);
     });
   } catch (error) {
