@@ -18,6 +18,8 @@ const dbRun = async () => {
     const Home = client.db(process.env.DB_NAME).collection("Home");
     const Blog = client.db(process.env.DB_NAME).collection("Blog");
     const Commets = client.db(process.env.DB_NAME).collection("Comments");
+    const Users = client.db(process.env.DB_NAME).collection("Users");
+    const Todos = client.db(process.env.DB_NAME).collection("Todos");
     app.get("/homedata", async (req, res) => {
       const query = {};
       const result = await Home.find(query).limit(5).toArray();
@@ -59,7 +61,7 @@ const dbRun = async () => {
     });
     app.post("/users-comments", async (req, res) => {
       const comment = req.body;
-      const result = await Commets.insertOne(comment);
+      const result = await UsersCommets.insertOne(Userst);
       console.log(comment);
       res.send(result);
     });
@@ -68,6 +70,47 @@ const dbRun = async () => {
       console.log("id", id);
       const query = { postId: id };
       const result = await Commets.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/user", async (req, res) => {
+      const user = req.body;
+      const result = await Users.insertOne(user);
+      res.send(result);
+      console.log(user);
+    });
+    app.get("/user", async (req, res) => {
+      const query = {};
+      const result = await Users.find(query).toArray();
+      res.send(result);
+    });
+
+    app.get("/todos", async (req, res) => {
+      const email = req.query.email;
+      const query = { userEmail: email };
+      const result = await Todos.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/todos", async (req, res) => {
+      const todo = req.body;
+      console.log(todo);
+      const result = await Todos.insertOne(todo);
+      res.send("result");
+    });
+    app.patch("/todos/:id", async (req, res) => {
+      const id = req.params.id;
+      const doc = req.body;
+      const query = { _id: ObjectId(id) };
+      const option = {};
+      const updatedDoc = {
+        $set: doc,
+      };
+      const result = await Todos.updateOne(query, updatedDoc, option);
+    });
+
+    app.delete("/todos/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await Todos.deleteOne(query);
       res.send(result);
     });
   } catch (error) {
