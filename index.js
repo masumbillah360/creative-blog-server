@@ -40,7 +40,14 @@ const dbRun = async () => {
       const blog = req.body;
       const blogs = await Blog.insertOne(blog);
       console.log(blog);
-      res.send(blogs);
+      res.status(200).send({ blog: "added" });
+    });
+    app.get("/my-blogs", async (req, res) => {
+      const email = req.query.email;
+      console.log("email", email);
+      const query = { userEmail: email };
+      const result = await Blog.find(query).toArray();
+      res.send(result);
     });
   } catch (error) {
     console.log(error);
